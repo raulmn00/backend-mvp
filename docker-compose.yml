@@ -1,0 +1,30 @@
+version: '3'
+services:
+  backendmvp:
+    container_name: backendmvp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - "db"
+    ports:
+      - "3002:3002"
+    volumes:
+      - "./apps/api_organizer:/usr/src/app"
+    command: yarn run dev
+
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - '3306:3306'
+
+networks:
+  db:
+    driver: bridge
