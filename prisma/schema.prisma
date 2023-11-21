@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum TicketStatus {
+  open
+  closed
+  pending
+  example
+}
+
+model Credential {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  adminId String? @unique
+  admin   Admin?  @relation(fields: [adminId], references: [id])
+
+  studentId String?  @unique
+  student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  password String @db.Text
+
+  @@map("credential")
+}
+
+model Student {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  name       String
+  email      String
+  phone      String
+  tickets    Ticket[]
+  messages   Message[]
+  credential Credential?
+
+  @@unique([email])
+  @@map("student")
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  name  String
+  email String
+  phone String
+
+  messages Message[]
+
+  credential Credential?
+
+  @@unique([email])
+  @@map("admin")
+}
+
+model Ticket {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  subject     String
+  description String @db.Text
+
+  messages Message[]
+
+  status TicketStatus @default(open)
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  studentId String?
+  student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  adminId String?
+  admin   Admin?  @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  content String @db.Text()
+
+  ticketId String
+  ticket   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
