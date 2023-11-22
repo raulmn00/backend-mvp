@@ -2,11 +2,12 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateTicketDto } from '../common/ticket/dto/create-ticket.dto';
 import { UpdateTicketDto } from '../common/ticket/dto/update-ticket.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { Ticket } from '@prisma/client';
 
 @Injectable()
 export class TicketService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(data: CreateTicketDto) {
+  async create(data: CreateTicketDto): Promise<Ticket> {
     const exist = await this.prisma.ticket.findFirst({
       where: {
         id: data.id,
@@ -34,19 +35,32 @@ export class TicketService {
     return ticket;
   }
 
-  findAll() {
-    return `This action returns all ticket`;
+  async findAll(): Promise<Ticket[]> {
+    return this.prisma.ticket.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ticket`;
+  async findOne(id: string): Promise<Ticket> {
+    return this.prisma.ticket.findFirstOrThrow({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: number, updateTicketDto: UpdateTicketDto) {
-    return `This action updates a #${id} ticket`;
+  update(id: string, data: UpdateTicketDto): Promise<Ticket> {
+    return this.prisma.ticket.update({
+      where: {
+        id,
+      },
+      data,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ticket`;
+  remove(id: string): Promise<Ticket> {
+    return this.prisma.ticket.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

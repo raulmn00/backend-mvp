@@ -34,7 +34,7 @@ export class AdminService {
     });
   }
 
-  async update(id: string, data: UpdateAdminDto) {
+  async update(id: string, data: UpdateAdminDto): Promise<Admin> {
     return this.prisma.admin.update({
       where: {
         id,
@@ -43,7 +43,7 @@ export class AdminService {
     });
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<Admin> {
     return this.prisma.admin.delete({
       where: {
         id,

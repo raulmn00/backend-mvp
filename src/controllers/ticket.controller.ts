@@ -21,22 +21,22 @@ export class TicketController {
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.ticketService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ticketService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return this.ticketService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTicketDto: UpdateTicketDto) {
-    return this.ticketService.update(+id, updateTicketDto);
+  async update(@Param('id') id: string, @Body() data: UpdateTicketDto) {
+    return this.ticketService.update(id, data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ticketService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return this.ticketService.remove(id);
   }
 }
