@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - "db"
+      - 'db'
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -14,7 +14,10 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       DATABASE_URL: ${DATABASE_URL}
     ports:
-      - "3002:3002"
+      - '3002:3002'
+    volumes:
+      - '.:/backendmvp'
+    command: yarn run dev
 
   db:
     image: mysql:8.0
@@ -27,5 +30,9 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       DATABASE_URL: ${DATABASE_URL}
     ports:
-      - "3306:3306"
+      - '3306:3306'
+    volumes:
+      - 'db-data-volume:/var/lib/mysql'
 
+volumes:
+  db-data-volume:

@@ -1,5 +1,5 @@
-FROM node:18-alpine
-WORKDIR backendmvp
+FROM node:18
+WORKDIR /backendmvp
 
 COPY package.json .
 RUN npm install

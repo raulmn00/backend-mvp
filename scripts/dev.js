@@ -1,12 +1,8 @@
 import pmex from 'pmex';
 import * as dotenv from 'dotenv';
+pmex(`yarn install `);
 
 dotenv.config(); // Load the environment variables
-pmex({
-  npm: `install && npm prune`,
-  pnpm: `install --fix-lockfile`,
-  yarn: `install `,
-});
 
 // pmex(`npx prisma migrate reset --force`);
 

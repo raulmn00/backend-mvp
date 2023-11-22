@@ -11,33 +11,34 @@ import {
 import { AdminService } from '../services/admin.service';
 import { CreateAdminDto } from '../common/admin/dto/create-admin.dto';
 import { UpdateAdminDto } from '../common/admin/dto/update-admin.dto';
+import { Admin } from '@prisma/client';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Post()
-  create(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminService.create(createAdminDto);
+  async create(@Body() data: CreateAdminDto): Promise<Admin> {
+    return this.adminService.create(data);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<Admin[]> {
     return this.adminService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adminService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return this.adminService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminService.update(+id, updateAdminDto);
+  async update(@Param('id') id: string, @Body() data: UpdateAdminDto) {
+    return this.adminService.update(id, data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return this.adminService.remove(id);
   }
 }

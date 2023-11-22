@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateAdminDto } from '../common/admin/dto/create-admin.dto';
 import { UpdateAdminDto } from '../common/admin/dto/update-admin.dto';
+import { PrismaService } from '../../prisma/prisma.service';
+import { Admin } from '@prisma/client';
 
 @Injectable()
 export class AdminService {
-  create(createAdminDto: CreateAdminDto) {
-    return 'This action adds a new admin';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(data: CreateAdminDto): Promise<Admin> {
+    const exists = await this.prisma.admin.findFirst({
+      where: {
+        email: data.email,
+      },
+    });
+    if (exists) {
+      throw new NotAcceptableException('Admin existente.');
+    }
+    const admin = await this.prisma.admin.create({
+      data,
+    });
+    return admin;
   }
 
-  findAll() {
-    return `This action returns all admin`;
+  async findAll(): Promise<Admin[]> {
+    return this.prisma.admin.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} admin`;
+  findOne(id: string): Promise<Admin> {
+    return this.prisma.admin.findFirst({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
+  async update(id: string, data: UpdateAdminDto) {
+    return this.prisma.admin.update({
+      where: {
+        id,
+      },
+      data,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
+  async remove(id: string) {
+    return this.prisma.admin.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
