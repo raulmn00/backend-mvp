@@ -1,26 +1,64 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateStudentDto } from '../common/student/dto/create-student.dto';
 import { UpdateStudentDto } from '../common/student/dto/update-student.dto';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class StudentService {
-  create(createStudentDto: CreateStudentDto) {
-    return 'This action adds a new student';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(data: CreateStudentDto) {
+    const exists = await this.prisma.student.findFirst({
+      where: {
+        email: data.email,
+      },
+    });
+    if (exists) {
+      throw new NotAcceptableException('Aluno existente.');
+    }
+    const student = await this.prisma.student.create({
+      data,
+    });
+    return student;
   }
 
-  findAll() {
-    return `This action returns all student`;
+  async findAll() {
+    const allStudents = this.prisma.student.findMany();
+    return allStudents;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
+  async findOne(id: string) {
+    const student = this.prisma.student.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    return student;
   }
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
+  async update(id: string, data: UpdateStudentDto) {
+    const exists = await this.prisma.student.findFirst({
+      where: {
+        id,
+      },
+    });
+    if (!exists) {
+      throw new NotAcceptableException('Aluno não existente.');
+    }
+
+    return this.prisma.student.update({
+      where: {
+        id,
+      },
+      data,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+  async remove(id: string) {
+    return this.prisma.student.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
