@@ -3,12 +3,15 @@ import { CreateAdminDto } from '../common/admin/dto/create-admin.dto';
 import { UpdateAdminDto } from '../common/admin/dto/update-admin.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Admin } from '@prisma/client';
-import { hash } from 'bcrypt';
+import { hash } from 'argon2';
 @Injectable()
 export class AdminService {
   constructor(private readonly prisma: PrismaService) {}
   async create(data: CreateAdminDto) {
+    console.log(data.credential.connect);
     const password = data.credential.connect.password.toString();
+
+    console.log('hashedPassword: ', hash(password));
 
     const exists = await this.prisma.admin.findFirst({
       where: {
@@ -19,9 +22,11 @@ export class AdminService {
       throw new NotAcceptableException('Admin existente.');
     }
 
-    if (typeof password !== 'undefined') {
+    if (password) {
+      const hashedPassword = await hash(password);
+
       data.credential = {
-        create: { password: await hash(password, 1) },
+        create: { password: hashedPassword },
       };
     }
 

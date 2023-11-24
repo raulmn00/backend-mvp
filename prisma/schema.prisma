@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "windows"]
@@ -11,86 +8,75 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum TicketStatus {
-  open
-  closed
-  pending
-  example
-}
-
 model Credential {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-
-  adminId String? @unique
-  admin   Admin?  @relation(fields: [adminId], references: [id])
-
+  adminId   String?  @unique
   studentId String?  @unique
+  password  String   @db.Text
+  admin     Admin?   @relation(fields: [adminId], references: [id])
   student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  password String @db.Text
 
   @@map("credential")
 }
 
 model Student {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-
+  id         String      @id @default(uuid())
+  createdAt  DateTime    @default(now())
   name       String
-  email      String
+  email      String      @unique
   phone      String
-  tickets    Ticket[]
   messages   Message[]
+  tickets    Ticket[]
   credential Credential?
 
-  @@unique([email])
   @@map("student")
 }
 
 model Admin {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-
-  name  String
-  email String
-  phone String
-
-  messages Message[]
-
+  id         String      @id @default(uuid())
+  createdAt  DateTime    @default(now())
+  name       String
+  email      String      @unique
+  phone      String
+  messages   Message[]
   credential Credential?
 
-  @@unique([email])
   @@map("admin")
 }
 
 model Ticket {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-
-  studentId String
-  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
+  id          String       @id @default(uuid())
+  createdAt   DateTime     @default(now())
+  studentId   String
   subject     String
-  description String @db.Text
+  description String       @db.Text
+  status      TicketStatus @default(open)
+  messages    Message[]
+  student     Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
-  messages Message[]
-
-  status TicketStatus @default(open)
+  @@index([studentId], map: "Ticket_studentId_fkey")
 }
 
 model Message {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-
   studentId String?
+  adminId   String?
+  content   String   @db.Text
+  ticketId  String?
+  admin     Admin?   @relation(fields: [adminId], references: [id], onDelete: Cascade)
   student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  ticket    Ticket?  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
 
-  adminId String?
-  admin   Admin?  @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  @@index([adminId], map: "Message_adminId_fkey")
+  @@index([studentId], map: "Message_studentId_fkey")
+  @@index([ticketId], map: "Message_ticketId_fkey")
+}
 
-  content String @db.Text()
-
-  ticketId String?
-  ticket   Ticket? @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+enum TicketStatus {
+  open
+  closed
+  pending
+  example
 }
