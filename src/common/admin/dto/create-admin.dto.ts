@@ -1,10 +1,20 @@
 import { Prisma } from '@prisma/client';
-export class CreateAdminDto implements Prisma.AdminUncheckedCreateInput {
-  createdAt: Date | string;
-  credential: Prisma.CredentialUncheckedCreateNestedOneWithoutAdminInput;
+import {IsEmail, IsNotEmpty, IsString} from "class-validator";
+export class CreateAdminDto {
+
+  @IsNotEmpty()
+  @IsEmail()
   email: string;
-  id: string;
-  messages: Prisma.MessageUncheckedCreateNestedManyWithoutAdminInput;
+
+  @IsNotEmpty()
+  @IsString()
   name: string;
+
+  @IsNotEmpty()
+  @IsString()
   phone: string;
+
+  @IsNotEmpty()
+  @IsString()
+  password: string;
 }

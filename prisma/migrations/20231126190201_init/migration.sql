@@ -44,6 +44,7 @@ CREATE TABLE `Ticket` (
     `description` TEXT NOT NULL,
     `status` ENUM('open', 'closed', 'pending', 'example') NOT NULL DEFAULT 'open',
 
+    INDEX `Ticket_studentId_fkey`(`studentId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -54,8 +55,11 @@ CREATE TABLE `Message` (
     `studentId` VARCHAR(191) NULL,
     `adminId` VARCHAR(191) NULL,
     `content` TEXT NOT NULL,
-    `ticketId` VARCHAR(191) NOT NULL,
+    `ticketId` VARCHAR(191) NULL,
 
+    INDEX `Message_adminId_fkey`(`adminId`),
+    INDEX `Message_studentId_fkey`(`studentId`),
+    INDEX `Message_ticketId_fkey`(`ticketId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -69,10 +73,10 @@ ALTER TABLE `credential` ADD CONSTRAINT `credential_studentId_fkey` FOREIGN KEY 
 ALTER TABLE `Ticket` ADD CONSTRAINT `Ticket_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `student`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Message` ADD CONSTRAINT `Message_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `student`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Message` ADD CONSTRAINT `Message_adminId_fkey` FOREIGN KEY (`adminId`) REFERENCES `admin`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Message` ADD CONSTRAINT `Message_adminId_fkey` FOREIGN KEY (`adminId`) REFERENCES `admin`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Message` ADD CONSTRAINT `Message_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `student`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Message` ADD CONSTRAINT `Message_ticketId_fkey` FOREIGN KEY (`ticketId`) REFERENCES `Ticket`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1,7 +1,7 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateStudentDto } from '../common/student/dto/create-student.dto';
 import { UpdateStudentDto } from '../common/student/dto/update-student.dto';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class StudentService {
@@ -12,6 +12,7 @@ export class StudentService {
         email: data.email,
       },
     });
+
     if (exists) {
       throw new NotAcceptableException('Aluno existente.');
     }

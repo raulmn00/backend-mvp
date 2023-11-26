@@ -18,8 +18,9 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Post()
-  async create(@Body() data: CreateAdminDto): Promise<Admin> {
-    return this.adminService.create(data);
+  async create(@Body() data: any): Promise<Admin> {
+    console.log({data})
+    return await this.adminService.create(data);
   }
 
   @Get()

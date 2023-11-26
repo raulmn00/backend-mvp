@@ -1,7 +1,7 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateTicketDto } from '../common/ticket/dto/create-ticket.dto';
 import { UpdateTicketDto } from '../common/ticket/dto/update-ticket.dto';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../prisma.service';
 import { Ticket } from '@prisma/client';
 
 @Injectable()

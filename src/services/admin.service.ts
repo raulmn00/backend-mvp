@@ -1,17 +1,16 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateAdminDto } from '../common/admin/dto/create-admin.dto';
 import { UpdateAdminDto } from '../common/admin/dto/update-admin.dto';
-import { PrismaService } from '../../prisma/prisma.service';
-import { Admin } from '@prisma/client';
-import { hash } from 'argon2';
+import { PrismaService } from '../prisma.service';
+import {Admin} from '@prisma/client';
+
+
 @Injectable()
 export class AdminService {
   constructor(private readonly prisma: PrismaService) {}
   async create(data: CreateAdminDto) {
-    console.log(data.credential.connect);
-    const password = data.credential.connect.password.toString();
 
-    console.log('hashedPassword: ', hash(password));
+    const {name, email, phone, password} = data;
 
     const exists = await this.prisma.admin.findFirst({
       where: {
@@ -22,17 +21,20 @@ export class AdminService {
       throw new NotAcceptableException('Admin existente.');
     }
 
-    if (password) {
-      const hashedPassword = await hash(password);
-
-      data.credential = {
-        create: { password: hashedPassword },
-      };
-    }
 
     const admin = await this.prisma.admin.create({
-      data,
+      data: {
+        name,
+        email,
+        phone,
+        credential: {
+          create: {
+            password
+          }
+        }
+      },
     });
+
 
     return admin;
   }

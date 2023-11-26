@@ -1,7 +1,4 @@
-import { Prisma } from '@prisma/client';
-export class CreateStudentDto implements Prisma.StudentUncheckedCreateInput {
-  createdAt: Date | string;
-  credential: Prisma.CredentialUncheckedCreateNestedOneWithoutStudentInput;
+export class CreateStudentDto  {
   email: string;
   id: string;
   messages: Prisma.MessageUncheckedCreateNestedManyWithoutStudentInput;
