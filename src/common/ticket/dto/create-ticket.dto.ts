@@ -1,10 +1,16 @@
-import { $Enums, Prisma } from '@prisma/client';
-export class CreateTicketDto implements Prisma.TicketUncheckedCreateInput {
-  createdAt: Date | string;
+import {IsNotEmpty, IsString} from "class-validator";
+
+export class CreateTicketDto  {
+
+  @IsNotEmpty()
+  @IsString()
   description: string;
-  id: string;
-  messages: Prisma.MessageUncheckedCreateNestedManyWithoutTicketInput;
-  status: $Enums.TicketStatus;
+
+  @IsNotEmpty()
+  @IsString()
   studentId: string;
+
+  @IsNotEmpty()
+  @IsString()
   subject: string;
 }

@@ -1,8 +1,19 @@
+import {IsEmail, IsNotEmpty, IsString} from "class-validator";
+
 export class CreateStudentDto  {
+
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
-  id: string;
-  messages: Prisma.MessageUncheckedCreateNestedManyWithoutStudentInput;
+
+  @IsString()
+  @IsNotEmpty()
   name: string;
+
+  @IsString()
   phone: string;
-  tickets: Prisma.TicketUncheckedCreateNestedManyWithoutStudentInput;
+
+  @IsNotEmpty()
+  @IsString()
+  password: string;
 }

@@ -1,10 +1,16 @@
-import { Prisma } from '@prisma/client';
+import {IsNotEmpty, IsString} from "class-validator";
 
-export class CreateMessageDto implements Prisma.MessageUncheckedCreateInput {
+export class CreateMessageDto {
+
+  @IsString()
   adminId: string | null;
+
+  @IsNotEmpty()
   content: string;
-  createdAt: Date | string;
-  id: string;
+
+  @IsString()
   studentId: string | null;
+
+  @IsString()
   ticketId: string | null;
 }
