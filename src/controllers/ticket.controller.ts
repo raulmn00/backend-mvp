@@ -30,6 +30,12 @@ export class TicketController {
     return this.ticketService.findOne(id);
   }
 
+
+  @Get('/message/:id')
+  async getTicketMessages(@Param('id') id: string){
+    return await this.ticketService.getTicketMessages(id);
+  }
+
   @Patch(':id')
   async update(@Param('id') id: string, @Body() data: UpdateTicketDto) {
     return this.ticketService.update(id, data);

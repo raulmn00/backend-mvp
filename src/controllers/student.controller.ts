@@ -40,11 +40,11 @@ export class StudentController {
     @Param('id') id: string,
     @Body() data: UpdateStudentDto,
   ): Promise<Student> {
-    return this.studentService.update(id, data);
+    return await this.studentService.update(id, data);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<Student> {
-    return this.studentService.remove(id);
+    return await this.studentService.remove(id);
   }
 }

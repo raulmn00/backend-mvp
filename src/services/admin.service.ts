@@ -67,4 +67,19 @@ export class AdminService {
       },
     });
   }
+
+  async getStudentMessages(id: string) {
+
+    const adminMessages = await this.prisma.message.findMany({
+      where: {
+        createdBy: id,
+      },
+      include: {
+        admin: true
+      }
+    })
+
+    return adminMessages;
+
+  }
 }

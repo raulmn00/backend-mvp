@@ -46,6 +46,18 @@ export class TicketService {
     });
   }
 
+  async getTicketMessages(ticketId: string){
+    const ticketMessages = await this.prisma.message.findMany({
+      where: {
+        ticketId
+      },
+      include: {
+        ticket: true
+      }
+    })
+    return ticketMessages;
+  }
+
   update(id: string, data: UpdateTicketDto): Promise<Ticket> {
     return this.prisma.ticket.update({
       where: {

@@ -2,6 +2,7 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateStudentDto } from '../common/student/dto/create-student.dto';
 import { UpdateStudentDto } from '../common/student/dto/update-student.dto';
 import { PrismaService } from '../prisma.service';
+import {Message} from "@prisma/client";
 
 @Injectable()
 export class StudentService {
@@ -46,7 +47,7 @@ export class StudentService {
     return allStudents;
   }
 
-  async getStudentMessages(studentId: string) {
+  async getStudentMessages(studentId: string): Promise<Message[]> {
 
     const studentMessages = await this.prisma.message.findMany({
       where: {
