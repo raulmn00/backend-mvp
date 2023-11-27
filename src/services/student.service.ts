@@ -7,9 +7,12 @@ import { PrismaService } from '../prisma.service';
 export class StudentService {
   constructor(private readonly prisma: PrismaService) {}
   async create(data: CreateStudentDto) {
+
+    const {name, email, phone, password} = data
+
     const exists = await this.prisma.student.findFirst({
       where: {
-        email: data.email,
+        email
       },
     });
 
@@ -17,14 +20,44 @@ export class StudentService {
       throw new NotAcceptableException('Aluno existente.');
     }
     const student = await this.prisma.student.create({
-      data,
+      data: {
+        name,
+        email,
+        phone,
+        credential: {
+          create: {
+            password
+          }
+        }
+      },
+      include: {
+        messages: true,
+      }
     });
     return student;
   }
 
   async findAll() {
-    const allStudents = this.prisma.student.findMany();
+    const allStudents = this.prisma.student.findMany({
+      include: {
+        messages: true,
+      }
+    });
     return allStudents;
+  }
+
+  async getStudentMessages(studentId: string) {
+
+    const studentMessages = await this.prisma.message.findMany({
+      where: {
+        createdBy: studentId
+      },
+      include: {
+        student: true
+      }
+    })
+
+    return studentMessages;
   }
 
   async findOne(id: string) {

@@ -17,7 +17,7 @@ export class TicketController {
 
   @Post()
   async create(@Body() data: CreateTicketDto) {
-    return this.ticketService.create(data);
+    return await this.ticketService.create(data);
   }
 
   @Get()

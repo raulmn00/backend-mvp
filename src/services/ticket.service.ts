@@ -8,14 +8,6 @@ import { Ticket } from '@prisma/client';
 export class TicketService {
   constructor(private readonly prisma: PrismaService) {}
   async create(data: CreateTicketDto): Promise<Ticket> {
-    const exist = await this.prisma.ticket.findFirst({
-      where: {
-        id: data.id,
-      },
-    });
-    if (exist) {
-      throw new NotAcceptableException('Ticket existente.');
-    }
 
     const studentExist = await this.prisma.student.findFirst({
       where: {
@@ -31,12 +23,19 @@ export class TicketService {
 
     const ticket = await this.prisma.ticket.create({
       data,
+      include: {
+        messages: true
+      }
     });
     return ticket;
   }
 
   async findAll(): Promise<Ticket[]> {
-    return this.prisma.ticket.findMany();
+    return this.prisma.ticket.findMany({
+      include: {
+        messages: true
+      }
+    });
   }
 
   async findOne(id: string): Promise<Ticket> {

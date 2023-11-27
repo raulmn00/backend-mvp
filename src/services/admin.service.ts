@@ -43,7 +43,7 @@ export class AdminService {
     return this.prisma.admin.findMany();
   }
 
-  findOne(id: string): Promise<Admin> {
+  async findOne(id: string): Promise<Admin> {
     return this.prisma.admin.findFirst({
       where: {
         id,

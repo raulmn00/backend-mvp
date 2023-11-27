@@ -27,7 +27,12 @@ export class StudentController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Student> {
-    return this.studentService.findOne(id);
+    return await this.studentService.findOne(id);
+  }
+
+  @Get('/message/:id')
+  async getStudentMessages(@Param('id') id: string){
+    return await this.studentService.getStudentMessages(id)
   }
 
   @Patch(':id')

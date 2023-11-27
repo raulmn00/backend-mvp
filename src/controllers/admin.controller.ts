@@ -19,7 +19,6 @@ export class AdminController {
 
   @Post()
   async create(@Body() data: any): Promise<Admin> {
-    console.log({data})
     return await this.adminService.create(data);
   }
 

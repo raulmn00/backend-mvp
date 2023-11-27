@@ -65,6 +65,7 @@ model Message {
   adminId   String?
   content   String   @db.Text
   ticketId  String?
+  createdBy String
   admin     Admin?   @relation(fields: [adminId], references: [id], onDelete: Cascade)
   student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
   ticket    Ticket?  @relation(fields: [ticketId], references: [id], onDelete: Cascade)

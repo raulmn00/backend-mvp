@@ -3,14 +3,18 @@ import {IsNotEmpty, IsString} from "class-validator";
 export class CreateMessageDto {
 
   @IsString()
-  adminId: string | null;
+  adminId?: string | null;
 
   @IsNotEmpty()
   content: string;
 
   @IsString()
-  studentId: string | null;
+  studentId?: string | null;
 
   @IsString()
   ticketId: string | null;
+
+  @IsString()
+  @IsNotEmpty()
+  createdBy: string
 }
