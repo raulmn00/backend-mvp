@@ -3,7 +3,7 @@ import { CreateAdminDto } from '../common/admin/dto/create-admin.dto';
 import { UpdateAdminDto } from '../common/admin/dto/update-admin.dto';
 import { PrismaService } from '../prisma.service';
 import {Admin} from '@prisma/client';
-
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class AdminService {
@@ -21,6 +21,8 @@ export class AdminService {
       throw new NotAcceptableException('Admin existente.');
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10)
+
 
     const admin = await this.prisma.admin.create({
       data: {
@@ -29,10 +31,13 @@ export class AdminService {
         phone,
         credential: {
           create: {
-            password
+            password: hashedPassword
           }
         }
       },
+      include: {
+        messages: true
+      }
     });
 
 
@@ -81,5 +86,15 @@ export class AdminService {
 
     return adminMessages;
 
+  }
+
+  async findByEmail(email: string){
+    const admin = await this.prisma.admin.findFirst({
+      where: {
+        email
+      }
+    })
+
+    return admin;
   }
 }

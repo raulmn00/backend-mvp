@@ -31,6 +31,7 @@ export class AdminController {
   async findOne(@Param('id') id: string) {
     return this.adminService.findOne(id);
   }
+
   @Get('/message/:id')
   async getStudentMessages(@Param('id') id: string){
     return await this.adminService.getStudentMessages(id)
