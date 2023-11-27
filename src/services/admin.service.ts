@@ -13,7 +13,7 @@ export class AdminService {
 
     const exists = await this.prisma.admin.findFirst({
       where: {
-        email
+        email,
       },
     });
     if (exists) {
