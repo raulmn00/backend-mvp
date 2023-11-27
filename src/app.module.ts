@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TicketModule } from './modules/ticket.module';
 
 import { MessageModule } from './modules/message.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { MessageModule } from './modules/message.module';
     StudentModule,
     TicketModule,
     MessageModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
