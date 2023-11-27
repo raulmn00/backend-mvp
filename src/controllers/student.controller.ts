@@ -31,8 +31,8 @@ export class StudentController {
   }
 
   @Get('/message/:id')
-  async getStudentMessages(@Param('id') id: string){
-    return await this.studentService.getStudentMessages(id)
+  async getStudentMessages(@Param('id') id: string) {
+    return await this.studentService.getStudentMessages(id);
   }
 
   @Patch(':id')

@@ -2,19 +2,18 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateStudentDto } from '../common/student/dto/create-student.dto';
 import { UpdateStudentDto } from '../common/student/dto/update-student.dto';
 import { PrismaService } from '../prisma.service';
-import {Message} from "@prisma/client";
-import * as bcrypt from 'bcrypt'
+import { Message } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class StudentService {
   constructor(private readonly prisma: PrismaService) {}
   async create(data: CreateStudentDto) {
-
-    const {name, email, phone, password} = data;
+    const { name, email, phone, password } = data;
 
     const exists = await this.prisma.student.findFirst({
       where: {
-        email
+        email,
       },
     });
 
@@ -22,7 +21,7 @@ export class StudentService {
       throw new NotAcceptableException('Aluno existente.');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const student = await this.prisma.student.create({
       data: {
@@ -31,13 +30,13 @@ export class StudentService {
         phone,
         credential: {
           create: {
-            password: hashedPassword
-          }
-        }
+            password: hashedPassword,
+          },
+        },
       },
       include: {
         messages: true,
-      }
+      },
     });
     return student;
   }
@@ -46,21 +45,20 @@ export class StudentService {
     const allStudents = this.prisma.student.findMany({
       include: {
         messages: true,
-      }
+      },
     });
     return allStudents;
   }
 
   async getStudentMessages(studentId: string): Promise<Message[]> {
-
     const studentMessages = await this.prisma.message.findMany({
       where: {
-        createdBy: studentId
+        createdBy: studentId,
       },
       include: {
-        student: true
-      }
-    })
+        student: true,
+      },
+    });
 
     return studentMessages;
   }
@@ -75,11 +73,11 @@ export class StudentService {
     return student;
   }
 
-  async findByEmail(email: string){
-    const student=  await this.prisma.student.findFirst({
+  async findByEmail(email: string) {
+    const student = await this.prisma.student.findFirst({
       where: {
-        email
-      }
+        email,
+      },
     });
 
     return student;

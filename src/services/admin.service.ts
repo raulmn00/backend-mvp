@@ -2,27 +2,25 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateAdminDto } from '../common/admin/dto/create-admin.dto';
 import { UpdateAdminDto } from '../common/admin/dto/update-admin.dto';
 import { PrismaService } from '../prisma.service';
-import {Admin} from '@prisma/client';
-import * as bcrypt from 'bcrypt'
+import { Admin } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AdminService {
   constructor(private readonly prisma: PrismaService) {}
   async create(data: CreateAdminDto) {
-
-    const {name, email, phone, password} = data;
+    const { name, email, phone, password } = data;
 
     const exists = await this.prisma.admin.findFirst({
       where: {
-        email: data.email,
+        email
       },
     });
     if (exists) {
       throw new NotAcceptableException('Admin existente.');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10)
-
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const admin = await this.prisma.admin.create({
       data: {
@@ -31,15 +29,14 @@ export class AdminService {
         phone,
         credential: {
           create: {
-            password: hashedPassword
-          }
-        }
+            password: hashedPassword,
+          },
+        },
       },
       include: {
-        messages: true
-      }
+        messages: true,
+      },
     });
-
 
     return admin;
   }
@@ -74,26 +71,24 @@ export class AdminService {
   }
 
   async getStudentMessages(id: string) {
-
     const adminMessages = await this.prisma.message.findMany({
       where: {
         createdBy: id,
       },
       include: {
-        admin: true
-      }
-    })
+        admin: true,
+      },
+    });
 
     return adminMessages;
-
   }
 
-  async findByEmail(email: string){
+  async findByEmail(email: string) {
     const admin = await this.prisma.admin.findFirst({
       where: {
-        email
-      }
-    })
+        email,
+      },
+    });
 
     return admin;
   }

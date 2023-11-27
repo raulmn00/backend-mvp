@@ -1,7 +1,6 @@
-import {IsNotEmpty, IsString} from "class-validator";
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateMessageDto {
-
   @IsString()
   adminId?: string | null;
 
@@ -16,5 +15,5 @@ export class CreateMessageDto {
 
   @IsString()
   @IsNotEmpty()
-  createdBy: string
+  createdBy: string;
 }

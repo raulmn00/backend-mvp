@@ -33,8 +33,8 @@ export class AdminController {
   }
 
   @Get('/message/:id')
-  async getStudentMessages(@Param('id') id: string){
-    return await this.adminService.getStudentMessages(id)
+  async getStudentMessages(@Param('id') id: string) {
+    return await this.adminService.getStudentMessages(id);
   }
 
   @Patch(':id')

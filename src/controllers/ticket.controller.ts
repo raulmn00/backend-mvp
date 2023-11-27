@@ -30,9 +30,8 @@ export class TicketController {
     return this.ticketService.findOne(id);
   }
 
-
   @Get('/message/:id')
-  async getTicketMessages(@Param('id') id: string){
+  async getTicketMessages(@Param('id') id: string) {
     return await this.ticketService.getTicketMessages(id);
   }
 
