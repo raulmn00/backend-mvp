@@ -7,10 +7,11 @@ import { StudentModule } from '../modules/student.module';
 import { PrismaService } from '../prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import * as process from 'process';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, PrismaService],
+  providers: [AuthService, LocalStrategy, PrismaService, JwtStrategy],
   imports: [
     AdminModule,
     StudentModule,
