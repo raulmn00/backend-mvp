@@ -74,9 +74,12 @@ export class StudentService {
   }
 
   async findByEmail(email: string) {
-    const student = await this.prisma.student.findFirst({
+    const student = await this.prisma.student.findUnique({
       where: {
         email,
+      },
+      include: {
+        credential: true,
       },
     });
 

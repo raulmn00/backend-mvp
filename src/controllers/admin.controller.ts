@@ -27,9 +27,9 @@ export class AdminController {
     return this.adminService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.adminService.findOne(id);
+  @Get(':email')
+  async findOne(@Param('email') email: string) {
+    return this.adminService.findByEmail(email);
   }
 
   @Get('/message/:id')

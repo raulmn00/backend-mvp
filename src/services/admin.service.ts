@@ -84,9 +84,12 @@ export class AdminService {
   }
 
   async findByEmail(email: string) {
-    const admin = await this.prisma.admin.findFirst({
+    const admin = await this.prisma.admin.findUnique({
       where: {
         email,
+      },
+      include: {
+        credential: true,
       },
     });
 
