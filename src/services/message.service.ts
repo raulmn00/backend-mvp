@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateMessageDto } from '../common/message/create-message.dto';
 import { UpdateMessageDto } from '../common/message/update-message.dto';
 import { PrismaService } from '../prisma.service';
+import { Message, Admin, Student } from '@prisma/client';
 
 @Injectable()
 export class MessageService {
@@ -13,6 +14,31 @@ export class MessageService {
     });
 
     return message;
+  }
+
+  async getTicketMessages(ticketId: string) {
+    //concat interfaces
+    type PrismaMessage = Message & {
+      admin?: Admin;
+      student?: Student;
+    };
+    const ticketMessages: PrismaMessage[] = await this.prisma.message.findMany({
+      where: {
+        ticketId,
+      },
+      include: {
+        admin: true,
+        student: true,
+      },
+    });
+    return ticketMessages.map((message) => {
+      const createdBy =
+        message.createdBy == message.adminId ? message.admin : message.student;
+      return {
+        ...message,
+        createdBy,
+      };
+    });
   }
 
   findAll() {

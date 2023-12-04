@@ -2,7 +2,7 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateTicketDto } from '../common/ticket/dto/create-ticket.dto';
 import { UpdateTicketDto } from '../common/ticket/dto/update-ticket.dto';
 import { PrismaService } from '../prisma.service';
-import { Ticket } from '@prisma/client';
+import { Prisma, Ticket } from '@prisma/client';
 
 @Injectable()
 export class TicketService {
@@ -55,6 +55,17 @@ export class TicketService {
       },
     });
     return ticketMessages;
+  }
+
+  async changeTicketStatus(ticketId: string, data: Prisma.TicketUpdateInput) {
+    const updatedTicket = await this.prisma.ticket.update({
+      where: {
+        id: ticketId,
+      },
+      data,
+    });
+
+    return updatedTicket;
   }
 
   update(id: string, data: UpdateTicketDto): Promise<Ticket> {

@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 
 import { AdminService } from '../services/admin.service';
-import { CreateAdminDto } from '../common/admin/dto/create-admin.dto';
 import { UpdateAdminDto } from '../common/admin/dto/update-admin.dto';
 import { Admin } from '@prisma/client';
 

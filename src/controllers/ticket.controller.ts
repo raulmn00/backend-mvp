@@ -40,6 +40,11 @@ export class TicketController {
     return this.ticketService.update(id, data);
   }
 
+  @Patch('/changeStatus/:ticketId')
+  async changeTicketStatus(@Param('ticketId') ticketId, @Body() data: any) {
+    return await this.ticketService.changeTicketStatus(ticketId, data);
+  }
+
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.ticketService.remove(id);

@@ -25,6 +25,11 @@ export class MessageController {
     return this.messageService.findAll();
   }
 
+  @Get('/ticketMessages/:ticketId')
+  async getTicketMessages(@Param('ticketId') ticketId: string) {
+    return this.messageService.getTicketMessages(ticketId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.messageService.findOne(+id);
