@@ -111,4 +111,12 @@ export class StudentService {
       },
     });
   }
+
+  async getStudentTickets(id: string) {
+    return this.prisma.ticket.findMany({
+      where: {
+        studentId: id,
+      },
+    });
+  }
 }
