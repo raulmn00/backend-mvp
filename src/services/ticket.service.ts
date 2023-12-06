@@ -47,7 +47,8 @@ export class TicketService {
     }
     if (query.status === 'closed') {
       status = TicketStatus.closed;
-    } else {
+    }
+    if (!query.status) {
       status = undefined;
     }
     try {
@@ -57,6 +58,7 @@ export class TicketService {
             { subject: { contains: `${query.subject}` } },
             { status: { equals: status as unknown as TicketStatus } },
             { description: { contains: `${query.description}` } },
+            { type: { contains: `${query.type}` } },
           ],
         },
         include: {
