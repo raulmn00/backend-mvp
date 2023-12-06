@@ -38,7 +38,7 @@ export class TicketService {
   }
 
   async findTicketSearch(query: Prisma.TicketWhereInput) {
-    let status = '';
+    let status = undefined;
     if (query.status === 'open') {
       status = TicketStatus.open;
     }
@@ -48,9 +48,7 @@ export class TicketService {
     if (query.status === 'closed') {
       status = TicketStatus.closed;
     }
-    if (!query.status) {
-      status = undefined;
-    }
+
     try {
       return this.prisma.ticket.findMany({
         where: {

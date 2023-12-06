@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AdminModule } from './modules/admin.module';
 import { StudentModule } from './modules/student.module';
 import { ConfigModule } from '@nestjs/config';
@@ -20,9 +18,8 @@ import { JwtAuthGuard } from './auth/guards/jwt-guard.auth';
     MessageModule,
     AuthModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
