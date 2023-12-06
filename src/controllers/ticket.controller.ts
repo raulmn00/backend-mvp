@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TicketService } from '../services/ticket.service';
 import { CreateTicketDto } from '../common/ticket/dto/create-ticket.dto';
@@ -23,6 +24,11 @@ export class TicketController {
   @Get()
   async findAll() {
     return this.ticketService.findAll();
+  }
+
+  @Get('/search')
+  async getTicketSearch(@Query() query) {
+    return this.ticketService.findTicketSearch(query);
   }
 
   @Get(':id')

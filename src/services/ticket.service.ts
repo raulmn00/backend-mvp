@@ -2,7 +2,7 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateTicketDto } from '../common/ticket/dto/create-ticket.dto';
 import { UpdateTicketDto } from '../common/ticket/dto/update-ticket.dto';
 import { PrismaService } from '../prisma.service';
-import { Prisma, Ticket } from '@prisma/client';
+import { Prisma, Ticket, TicketStatus } from '@prisma/client';
 
 @Injectable()
 export class TicketService {
@@ -31,6 +31,31 @@ export class TicketService {
 
   async findAll(): Promise<Ticket[]> {
     return this.prisma.ticket.findMany({
+      include: {
+        messages: true,
+      },
+    });
+  }
+
+  async findTicketSearch(query: Prisma.TicketWhereInput) {
+    let status = '';
+    if (query.status === 'open') {
+      status = TicketStatus.open;
+    }
+    if (query.status === 'pending') {
+      status = TicketStatus.pending;
+    }
+    if (query.status === 'closed') {
+      status = TicketStatus.closed;
+    }
+    return this.prisma.ticket.findMany({
+      where: {
+        OR: [
+          { subject: { contains: `${query.subject}` } },
+          { status: { equals: status as unknown as TicketStatus } },
+          { description: { contains: `${query.description}` } },
+        ],
+      },
       include: {
         messages: true,
       },
