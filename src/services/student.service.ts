@@ -2,7 +2,7 @@ import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateStudentDto } from '../common/student/dto/create-student.dto';
 import { UpdateStudentDto } from '../common/student/dto/update-student.dto';
 import { PrismaService } from '../prisma.service';
-import { Message } from '@prisma/client';
+import { Message, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -42,12 +42,26 @@ export class StudentService {
   }
 
   async findAll() {
-    const allStudents = this.prisma.student.findMany({
+    return this.prisma.student.findMany({
       include: {
         messages: true,
       },
     });
-    return allStudents;
+  }
+
+  async findStudentSearch(query: Prisma.StudentWhereInput) {
+    return this.prisma.student.findMany({
+      where: {
+        OR: [
+          { name: { contains: `${query.name}` } },
+          { email: { contains: `${query.email}` } },
+          { phone: { contains: `${query.phone}` } },
+        ],
+      },
+      include: {
+        messages: true,
+      },
+    });
   }
 
   async getStudentMessages(studentId: string): Promise<Message[]> {

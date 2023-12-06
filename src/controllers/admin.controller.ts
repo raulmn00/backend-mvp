@@ -11,11 +11,12 @@ import {
 import { AdminService } from '../services/admin.service';
 import { UpdateAdminDto } from '../common/admin/dto/update-admin.dto';
 import { Admin } from '@prisma/client';
+import { IsPublic } from '../auth/decorators/is-public.decorator';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
-
+  @IsPublic()
   @Post()
   async create(@Body() data: any): Promise<Admin> {
     return await this.adminService.create(data);

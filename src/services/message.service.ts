@@ -30,7 +30,9 @@ export class MessageService {
         admin: true,
         student: true,
       },
+      orderBy: { createdAt: 'asc' },
     });
+
     return ticketMessages.map((message) => {
       const createdBy =
         message.createdBy == message.adminId ? message.admin : message.student;
