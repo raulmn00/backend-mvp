@@ -54,6 +54,7 @@ model Ticket {
   status      TicketStatus @default(open)
   messages    Message[]
   student     Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  type        String
 
   @@index([studentId], map: "Ticket_studentId_fkey")
 }
@@ -79,5 +80,4 @@ enum TicketStatus {
   open
   closed
   pending
-  example
 }

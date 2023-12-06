@@ -12,4 +12,8 @@ export class CreateTicketDto {
   @IsNotEmpty()
   @IsString()
   subject: string;
+
+  @IsNotEmpty()
+  @IsString()
+  type: string;
 }
