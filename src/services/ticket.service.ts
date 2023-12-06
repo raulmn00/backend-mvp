@@ -47,19 +47,25 @@ export class TicketService {
     }
     if (query.status === 'closed') {
       status = TicketStatus.closed;
+    } else {
+      status = undefined;
     }
-    return this.prisma.ticket.findMany({
-      where: {
-        OR: [
-          { subject: { contains: `${query.subject}` } },
-          { status: { equals: status as unknown as TicketStatus } },
-          { description: { contains: `${query.description}` } },
-        ],
-      },
-      include: {
-        messages: true,
-      },
-    });
+    try {
+      return this.prisma.ticket.findMany({
+        where: {
+          OR: [
+            { subject: { contains: `${query.subject}` } },
+            { status: { equals: status as unknown as TicketStatus } },
+            { description: { contains: `${query.description}` } },
+          ],
+        },
+        include: {
+          messages: true,
+        },
+      });
+    } catch (err) {
+      throw new Error('Invalid search. Please try again.');
+    }
   }
 
   async findOne(id: string): Promise<Ticket> {
