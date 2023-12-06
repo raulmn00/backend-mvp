@@ -22,6 +22,12 @@ export class AdminController {
     return await this.adminService.create(data);
   }
 
+  @IsPublic()
+  @Post('/login')
+  async adminLogin(@Body() data: { email: string; password: string }) {
+    return await this.adminService.adminLogin(data);
+  }
+
   @Get()
   async findAll(): Promise<Admin[]> {
     return this.adminService.findAll();

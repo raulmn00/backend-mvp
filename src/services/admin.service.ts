@@ -1,13 +1,17 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import {Injectable, NotAcceptableException, UnauthorizedException} from '@nestjs/common';
 import { CreateAdminDto } from '../common/admin/dto/create-admin.dto';
 import { UpdateAdminDto } from '../common/admin/dto/update-admin.dto';
 import { PrismaService } from '../prisma.service';
 import { Admin } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import {UserPayload} from "../auth/common/UserPayload";
+import {UserToken} from "../auth/common/UserToken";
+import {JwtService} from "@nestjs/jwt";
+import * as process from "process";
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService,) {}
   async create(data: CreateAdminDto) {
     const { name, email, phone, password } = data;
 
@@ -95,4 +99,57 @@ export class AdminService {
 
     return admin;
   }
+
+  async adminLogin(data: { email: string; password: string }) {
+    const userIsStudent = await this.prisma.student.findUnique({
+      where: {
+        email: data.email,
+      },
+    });
+    if (userIsStudent) {
+      throw new NotAcceptableException(
+        'Estudantes não podem acessar a área administrativa',
+        { cause: new Error(), description: 'NotAcceptableException' },
+      );
+    }
+    const validateAdmin = await this.validateAdmin(data.email, data.password);
+
+    if(!validateAdmin){
+      throw new UnauthorizedException('Email ou senha invalidos.');
+    }
+
+    const {id, email, phone, name, createdAt} = validateAdmin;
+
+    const payload: UserPayload = {
+      email: email,
+      name: name,
+      sub: id,
+    };
+
+    const jwtToken = this.jwtService.sign(payload,{secret: process.env.JWT_SECRET});
+    return {
+      access_token: jwtToken,
+    };
+
+  }
+
+  async validateAdmin(email: string, passwordToCompare: string) {
+    const isValidAdmin = await this.findByEmail(email);
+
+    if (isValidAdmin) {
+      const { password } = isValidAdmin.credential;
+
+      const isPasswordValid = await bcrypt.compare(passwordToCompare, password);
+
+
+      if (isPasswordValid) {
+        return {
+          ...isValidAdmin,
+          credential: undefined,
+        };
+      }
+    }
+  }
+
+
 }
