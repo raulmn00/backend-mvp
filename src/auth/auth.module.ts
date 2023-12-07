@@ -7,7 +7,7 @@ import * as process from 'process';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
-  providers: [ PrismaService, JwtStrategy],
+  providers: [PrismaService, JwtStrategy],
   imports: [
     AdminModule,
     StudentModule,

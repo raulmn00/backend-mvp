@@ -120,7 +120,7 @@ export class AdminService {
     }
     const validateAdmin = await this.validateAdmin(data.email, data.password);
 
-    const { id, email, phone, name, createdAt } = validateAdmin;
+    const { id, email, name } = validateAdmin;
 
     const payload: UserPayload = {
       email: email,
@@ -136,7 +136,7 @@ export class AdminService {
     };
   }
 
-  async validateAdmin(email: string, passwordToCompare: string) {
+  private async validateAdmin(email: string, passwordToCompare: string) {
     const isValidAdmin = await this.findByEmail(email);
 
     if (isValidAdmin) {
