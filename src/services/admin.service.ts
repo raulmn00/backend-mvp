@@ -133,6 +133,7 @@ export class AdminService {
     });
     return {
       access_token: jwtToken,
+      admin: validateAdmin,
     };
   }
 

@@ -2,18 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateMessageDto } from '../common/message/create-message.dto';
 import { UpdateMessageDto } from '../common/message/update-message.dto';
 import { PrismaService } from '../prisma.service';
-import { Message, Admin, Student } from '@prisma/client';
+import { Admin, Message, Prisma, Student } from '@prisma/client';
 
 @Injectable()
 export class MessageService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateMessageDto) {
-    const message = await this.prisma.message.create({
+    return this.prisma.message.create({
       data,
     });
-
-    return message;
   }
 
   async getTicketMessages(ticketId: string) {
@@ -30,7 +28,7 @@ export class MessageService {
         admin: true,
         student: true,
       },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: Prisma.SortOrder.asc },
     });
 
     return ticketMessages.map((message) => {

@@ -1,16 +1,13 @@
-import {
-  Injectable,
-  NotAcceptableException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { CreateStudentDto } from '../common/student/dto/create-student.dto';
-import { UpdateStudentDto } from '../common/student/dto/update-student.dto';
-import { PrismaService } from '../prisma.service';
-import { Message, Prisma } from '@prisma/client';
+import {Injectable, NotAcceptableException, UnauthorizedException,} from '@nestjs/common';
+import {CreateStudentDto} from '../common/student/dto/create-student.dto';
+import {UpdateStudentDto} from '../common/student/dto/update-student.dto';
+import {PrismaService} from '../prisma.service';
+import {Message, Prisma} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { UserPayload } from '../auth/common/UserPayload';
-import { JwtService } from '@nestjs/jwt';
+import {UserPayload} from '../auth/common/UserPayload';
+import {JwtService} from '@nestjs/jwt';
 import * as process from 'process';
+
 @Injectable()
 export class StudentService {
   constructor(
@@ -87,13 +84,11 @@ export class StudentService {
   }
 
   async findOne(id: string) {
-    const student = this.prisma.student.findFirst({
+    return this.prisma.student.findFirst({
       where: {
         id,
       },
-    });
-
-    return student;
+    })
   }
 
   async findByEmail(email: string) {
@@ -107,13 +102,13 @@ export class StudentService {
     });
 
     return student;
-  } // import {UserPayload} from "../auth/models/UserPayload";
+  }
 
   async update(id: string, data: UpdateStudentDto) {
     const exists = await this.prisma.student.findFirst({
       where: {
         id,
-      }, // import {UserPayload} from "../auth/models/UserPayload";
+      },
     });
     if (!exists) {
       throw new NotAcceptableException('Aluno não existente.');
@@ -174,6 +169,7 @@ export class StudentService {
     });
     return {
       access_token: jwtToken,
+      student: validateStudent,
     };
   }
 
