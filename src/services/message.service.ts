@@ -34,9 +34,11 @@ export class MessageService {
     return ticketMessages.map((message) => {
       const createdBy =
         message.createdBy == message.adminId ? message.admin : message.student;
+      const createdByAdmin = message.createdBy == message.adminId;
       return {
         ...message,
         createdBy,
+        createdByAdmin,
       };
     });
   }

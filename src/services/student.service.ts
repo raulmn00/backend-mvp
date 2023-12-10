@@ -1,11 +1,15 @@
-import {Injectable, NotAcceptableException, UnauthorizedException,} from '@nestjs/common';
-import {CreateStudentDto} from '../common/student/dto/create-student.dto';
-import {UpdateStudentDto} from '../common/student/dto/update-student.dto';
-import {PrismaService} from '../prisma.service';
-import {Message, Prisma} from '@prisma/client';
+import {
+  Injectable,
+  NotAcceptableException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { CreateStudentDto } from '../common/student/dto/create-student.dto';
+import { UpdateStudentDto } from '../common/student/dto/update-student.dto';
+import { PrismaService } from '../prisma.service';
+import { Message, Prisma, TicketStatus } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import {UserPayload} from '../auth/common/UserPayload';
-import {JwtService} from '@nestjs/jwt';
+import { UserPayload } from '../auth/common/UserPayload';
+import { JwtService } from '@nestjs/jwt';
 import * as process from 'process';
 
 @Injectable()
@@ -16,6 +20,12 @@ export class StudentService {
   ) {}
   async create(data: CreateStudentDto) {
     const { name, email, phone, password } = data;
+
+    if (!name || !email || !phone || !password) {
+      throw new NotAcceptableException(
+        'Preencha todos os campos para criar um estudante.',
+      );
+    }
 
     const exists = await this.prisma.student.findFirst({
       where: {
@@ -29,7 +39,7 @@ export class StudentService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const student = await this.prisma.student.create({
+    return this.prisma.student.create({
       data: {
         name,
         email,
@@ -44,7 +54,6 @@ export class StudentService {
         messages: true,
       },
     });
-    return student;
   }
 
   async findAll() {
@@ -88,7 +97,7 @@ export class StudentService {
       where: {
         id,
       },
-    })
+    });
   }
 
   async findByEmail(email: string) {
@@ -189,5 +198,40 @@ export class StudentService {
       }
     }
     throw new UnauthorizedException('Email ou senha invalidos.');
+  }
+
+  async searchStudentTickets(
+    studentId: string,
+    query: Prisma.TicketWhereInput,
+  ) {
+    let status = undefined;
+    if (query.status === 'open') {
+      status = TicketStatus.open;
+    }
+    if (query.status === 'pending') {
+      status = TicketStatus.pending;
+    }
+    if (query.status === 'closed') {
+      status = TicketStatus.closed;
+    }
+
+    try {
+      return this.prisma.ticket.findMany({
+        where: {
+          OR: [
+            { subject: { contains: `${query.subject}` } },
+            { status: { equals: status as unknown as TicketStatus } },
+            { description: { contains: `${query.description}` } },
+            { type: { contains: `${query.type}` } },
+          ],
+          studentId,
+        },
+        include: {
+          messages: true,
+        },
+      });
+    } catch (err) {
+      throw new Error('Pesquisa inválida.');
+    }
   }
 }

@@ -73,6 +73,9 @@ export class TicketService {
       where: {
         id,
       },
+      include: {
+        student: true,
+      },
     });
   }
 
@@ -88,18 +91,7 @@ export class TicketService {
     return ticketMessages;
   }
 
-  async changeTicketStatus(ticketId: string, data: Prisma.TicketUpdateInput) {
-    const updatedTicket = await this.prisma.ticket.update({
-      where: {
-        id: ticketId,
-      },
-      data,
-    });
-
-    return updatedTicket;
-  }
-
-  update(id: string, data: UpdateTicketDto): Promise<Ticket> {
+  async update(id: string, data: Prisma.TicketUpdateInput): Promise<Ticket> {
     return this.prisma.ticket.update({
       where: {
         id,
@@ -108,7 +100,7 @@ export class TicketService {
     });
   }
 
-  remove(id: string): Promise<Ticket> {
+  async remove(id: string): Promise<Ticket> {
     return this.prisma.ticket.delete({
       where: {
         id,

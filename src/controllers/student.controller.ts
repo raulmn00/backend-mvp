@@ -17,6 +17,7 @@ import { IsPublic } from '../auth/decorators/is-public.decorator';
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
+  @IsPublic()
   @Post()
   async create(@Body() data: CreateStudentDto): Promise<Student> {
     return await this.studentService.create(data);
@@ -25,6 +26,14 @@ export class StudentController {
   @Post('/login')
   async adminLogin(@Body() data: { email: string; password: string }) {
     return await this.studentService.studentLogin(data);
+  }
+
+  @Get(`:studentId/ticket/search`)
+  async searchStudentTickets(
+    @Param('studentId') studentId: string,
+    @Query() query,
+  ) {
+    return this.studentService.searchStudentTickets(studentId, query);
   }
 
   @Get('/')

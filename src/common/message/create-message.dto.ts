@@ -1,8 +1,14 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  Allow,
+  IsDefined,
+  IsEmpty,
+  IsNotEmpty,
+  IsString,
+} from 'class-validator';
 
 export class CreateMessageDto {
-  @IsString()
-  adminId?: string | null;
+  @Allow()
+  adminId?: string;
 
   @IsNotEmpty()
   content: string;

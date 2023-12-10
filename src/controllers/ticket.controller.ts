@@ -11,6 +11,7 @@ import {
 import { TicketService } from '../services/ticket.service';
 import { CreateTicketDto } from '../common/ticket/dto/create-ticket.dto';
 import { UpdateTicketDto } from '../common/ticket/dto/update-ticket.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('ticket')
 export class TicketController {
@@ -42,17 +43,15 @@ export class TicketController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() data: UpdateTicketDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() data: Prisma.TicketUpdateInput,
+  ) {
     return this.ticketService.update(id, data);
   }
 
-  @Patch('/changeStatus/:ticketId')
-  async changeTicketStatus(@Param('ticketId') ticketId, @Body() data: any) {
-    return await this.ticketService.changeTicketStatus(ticketId, data);
-  }
-
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.ticketService.remove(id);
+  @Delete(':ticketId')
+  async remove(@Param('ticketId') ticketId: string) {
+    return this.ticketService.remove(ticketId);
   }
 }
